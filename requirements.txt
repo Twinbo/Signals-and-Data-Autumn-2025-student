@@ -8,3 +8,4 @@ gensim
 fasttext-wheel
 tqdm
 scikit-learn
+mne
