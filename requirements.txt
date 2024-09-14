@@ -8,5 +8,11 @@ gensim
 fasttext-wheel
 tqdm
 scikit-learn
+<<<<<<< HEAD
 mne
 pandas
+=======
+torch
+torchvision
+torchsummary
+>>>>>>> 590d889 (add work on week 3)
