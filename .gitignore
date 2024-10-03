@@ -6,3 +6,4 @@ week_10/wiki-news-300d-1M.vec
 /week_3/data
 week_9/glove.6B.50d.txt
 *.pth
+*.zip
