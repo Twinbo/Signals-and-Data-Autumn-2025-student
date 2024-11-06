@@ -12,7 +12,8 @@ import torchvision.datasets as datasets
 import torchvision.models as models
 import torchvision.transforms as transforms
 from torch.utils.data import random_split, Subset, TensorDataset, DataLoader
-from torchvision.models import MobileNet_V2_Weights, SqueezeNet1_0_Weights, ShuffleNet_V2_X0_5_Weights
+from torchvision.models import MobileNet_V2_Weights, SqueezeNet1_0_Weights, ShuffleNet_V2_X0_5_Weights, \
+    ResNeXt50_32X4D_Weights
 from tqdm.notebook import tqdm
 
 from model_classes import FFNN
@@ -104,10 +105,20 @@ def get_relative_representations(dataset, anchors_embedded, model, filename_base
     data, targets = [], []
     dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False)
 
+    continue_counter = 0
     for batch_idx, (imgs, targets_) in tqdm(enumerate(dataloader), total=len(dataloader), desc="Rel Reps"):
-        imgs = imgs.to(device)
-        imgs_embedded = model.features(imgs)
+        filename_batch = filename_base.replace("batch", f"batch_{batch_idx + 1}")
 
+        if os.path.exists(filename_batch):
+            print(f"Skipped {filename_batch}")
+            continue_counter = 10
+        continue_counter -= 0 < continue_counter
+
+        if continue_counter:
+            continue
+
+        imgs = imgs.to(device)
+        imgs_embedded = model.features(imgs) if "resnet" not in filename_base else model(imgs)
         # Process each image in the batch
         for img, target in zip(imgs_embedded, targets_):
             repr = cossim(img.unsqueeze(0).reshape((1, -1)), anchors_embedded.reshape((len(anchors_embedded), -1)))
@@ -119,7 +130,7 @@ def get_relative_representations(dataset, anchors_embedded, model, filename_base
             data_batch = torch.vstack(data)
             targets_batch = torch.vstack(targets)
             dataset_batch = TensorDataset(data_batch, targets_batch)
-            torch.save(dataset_batch, filename_base.replace("batch", f"batch_{batch_idx + 1}"))
+            torch.save(dataset_batch, filename_batch)
             data, targets = [], []  # Reset the lists for the next batch
 
     # Final saving if any data is left to save
@@ -137,11 +148,13 @@ def get_relative_representations(dataset, anchors_embedded, model, filename_base
 
 mobilenet = models.mobilenet_v2(weights=MobileNet_V2_Weights.DEFAULT).to(device)
 squeezenet = models.squeezenet1_0(weights=SqueezeNet1_0_Weights.DEFAULT).to(device)
-shufflenet = models.shufflenet_v2_x0_5(weights=ShuffleNet_V2_X0_5_Weights.DEFAULT).to(device)
+resnet = models.resnet50(weights=ResNeXt50_32X4D_Weights)
+modules = list(resnet.children())[:-2]  # Remove avgpool and fc
+resnet = torch.nn.Sequential(*modules)
 
 mobilenet.eval()
 squeezenet.eval()
-shufflenet.eval()
+resnet.eval()
 
 
 # In[16]:
@@ -154,14 +167,14 @@ anchor_subset = sample_cifar_evenly(cifar10_train, num_per_class=30)
 anchor_subset_matrix = torch.concat([img.unsqueeze(0) for img, _ in anchor_subset], dim=0).to(device)
 
 # Define the models and datasets
-models = [mobilenet, squeezenet, shufflenet]
+models = [resnet, mobilenet, squeezenet, ]
 datasets = [("train", cifar10_train), ("val", cifar10_val), ("test", cifar10_test)]
-model_names = ["mobilenet", "squeezenet", "shufflenet"]
+model_names = ["resnet", "mobilenet", "squeezenet", ]
 
 # Loop through each model and dataset
 for model, model_name in zip(models, model_names):
     # Calculate the anchor matrix for each model
-    anchors_embedded = model.features(anchor_subset_matrix)
+    anchors_embedded = model.features(anchor_subset_matrix) if model_name != "resnet" else model(anchor_subset_matrix)
 
     for dataset_type, dataset in datasets:
         # Construct the filename base for each combination (train/val/test)
