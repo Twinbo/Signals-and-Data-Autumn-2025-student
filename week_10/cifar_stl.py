@@ -30,7 +30,7 @@ print(device)
 # Define transformations
 transform = transforms.Compose([
     transforms.Resize(256),  # Resize to 256 pixels on the smaller side
-    transforms.CenterCrop(64),  # Crop to 224 x 224
+    transforms.CenterCrop(224),  # Crop to 224 x 224
     transforms.ToTensor(),
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])  # ImageNet normalization
 ])
@@ -84,7 +84,6 @@ def sample_cifar_evenly(dataset, num_per_class, num_classes=10):
     # Create a subset with the sampled indices
     print(f"Sampled {len(sampled_indices)} points")
     return Subset(dataset, sampled_indices)
-
 
 # In[6]:
 
