@@ -30,7 +30,7 @@ print(device)
 # Define transformations
 transform = transforms.Compose([
     transforms.Resize(256),  # Resize to 256 pixels on the smaller side
-    transforms.CenterCrop(224),  # Crop to 224 x 224
+    transforms.CenterCrop(64),  # Crop to 224 x 224
     transforms.ToTensor(),
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])  # ImageNet normalization
 ])
@@ -166,7 +166,7 @@ for model, model_name in zip(models, model_names):
     for dataset_type, dataset in datasets:
         # Construct the filename base for each combination (train/val/test)
         filename_base = f"data/rel_reps_{model_name}/{dataset_type}/batch.pth"
-        os.makedirs(os.path.dirname(filename_base))
+        os.makedirs(os.path.dirname(filename_base), exist_ok=True)
         # Call the function to get relative representations and save them in batches
         get_relative_representations(dataset, anchors_embedded, model, filename_base)
 
