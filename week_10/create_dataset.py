@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 import os
-# In[2]:
-
-
 import random
 
 import torch
@@ -12,47 +9,12 @@ import torchvision.datasets as datasets
 import torchvision.models as models
 import torchvision.transforms as transforms
 from torch.utils.data import random_split, Subset, TensorDataset, DataLoader
-from torchvision.models import MobileNet_V2_Weights, SqueezeNet1_0_Weights, ShuffleNet_V2_X0_5_Weights, \
-    ResNeXt50_32X4D_Weights
+from torchvision.models import MobileNet_V2_Weights, SqueezeNet1_0_Weights, ResNeXt50_32X4D_Weights
+from tqdm import tqdm
 from tqdm.notebook import tqdm
 
-from model_classes import FFNN
-from train_function import train
 
-device = "cpu" # "cuda" if torch.cuda.is_available() else "cpu"
-print(device)
-
-
-# If previously created and saved load them here:
-
-# In[3]:
-
-
-# Define transformations
-transform = transforms.Compose([
-    transforms.Resize(256),  # Resize to 256 pixels on the smaller side
-    transforms.CenterCrop(64),  # Crop to 224 x 224
-    transforms.ToTensor(),
-    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])  # ImageNet normalization
-])
-
-
-# In[4]:
-
-
-# Download CIFAR-10
-cifar10_train = datasets.CIFAR10(root='./data', train=True, download=True, transform=transform)
-cifar10_test = datasets.CIFAR10(root='./data', train=False, download=True, transform=transform)
-
-# Split the training data into training and validation sets
-train_size = int(0.8 * len(cifar10_train))  # 80% for training
-val_size = len(cifar10_train) - train_size  # Remaining 20% for validation
-cifar10_train, cifar10_val = random_split(cifar10_train, [train_size, val_size])
-
-
-# In[15]:
-
-
+# In[2]:
 def sample_cifar_evenly(dataset, num_per_class, num_classes=10):
     """
     Samples images evenly across the classes in the CIFAR dataset.
@@ -94,11 +56,6 @@ def cossim(img1, img2):
 
 
 # In[7]:
-
-
-import torch
-from torch.utils.data import DataLoader
-from tqdm import tqdm
 
 
 def get_relative_representations(dataset, anchors_embedded, model, filename_base, batch_size=32, use_own_reps=False):
@@ -146,42 +103,104 @@ def get_relative_representations(dataset, anchors_embedded, model, filename_base
     return data, targets
 
 
-# In[8]:
+def load_and_concatenate_batches(folder, batch_size=32):
+    """
+    Load and concatenate data from multiple batch files, given a pattern.
+
+    Args:
+        file_pattern (str): The pattern for the saved .pth files (e.g., "data/rel_reps_mobilenet/train/batch_*.pth").
+        batch_size (int): The batch size to use for loading.
+
+    Returns:
+        DataLoader: A DataLoader with the concatenated dataset.
+    """
+    # Find all batch files matching the pattern
+    try:
+        batch_files = os.listdir(folder)
+    except FileNotFoundError:
+        print(f"No data for {folder}")
+        return None
+    # Initialize lists to accumulate the data
+    all_data, all_targets = [], []
+
+    # Iterate through each batch file
+    for batch_file in batch_files:
+        # Load the TensorDataset for the current batch
+        file_path = os.path.join(os.path.dirname(folder), batch_file)
+
+        if os.path.exists(file_path):
+            dataset = torch.load(file_path)
+            # Accumulate the data and targets
+            for data_batch, target_batch in dataset:
+                all_data.append(data_batch)
+                all_targets.append(target_batch)
+        else:
+            print(f"File not found: {file_path}")
+    if not all_data:
+        print(f"No data for {folder}")
+        return None
+
+    # Concatenate all batches into a single tensor
+    all_data = torch.vstack(all_data).detach()
+    all_targets = torch.cat(all_targets, dim=0).detach()
+    # Create a TensorDataset and return a DataLoader
+    full_dataset = TensorDataset(all_data, all_targets)
+    return DataLoader(full_dataset, batch_size=batch_size, shuffle="train" in folder.lower())
 
 
-mobilenet = models.mobilenet_v2(weights=MobileNet_V2_Weights.DEFAULT).to(device)
-squeezenet = models.squeezenet1_0(weights=SqueezeNet1_0_Weights.DEFAULT).to(device)
-resnet = models.resnet50(weights=ResNeXt50_32X4D_Weights)
-modules = list(resnet.children())[:-2]  # Remove avgpool and fc
-resnet = torch.nn.Sequential(*modules)
+if __name__ == "__main__":
+    device = "cpu"  # It uses a lot of memory and does not have to be really fast
+    print(device)
 
-mobilenet.eval()
-squeezenet.eval()
-resnet.eval()
+    # Define transformations
+    transform = transforms.Compose([
+        transforms.Resize(256),  # Resize to 256 pixels on the smaller side
+        transforms.CenterCrop(64),  # Crop to 224 x 224
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])  # ImageNet normalization
+    ])
+
+    # Download CIFAR-10
+    cifar10_train = datasets.CIFAR10(root='./data', train=True, download=True, transform=transform)
+    cifar10_test = datasets.CIFAR10(root='./data', train=False, download=True, transform=transform)
+
+    # Split the training data into training and validation sets
+    train_size = int(0.8 * len(cifar10_train))  # 80% for training
+    val_size = len(cifar10_train) - train_size  # Remaining 20% for validation
+    cifar10_train, cifar10_val = random_split(cifar10_train, [train_size, val_size])
+
+    mobilenet = models.mobilenet_v2(weights=MobileNet_V2_Weights.DEFAULT).to(device)
+    squeezenet = models.squeezenet1_0(weights=SqueezeNet1_0_Weights.DEFAULT).to(device)
+    resnet = models.resnet50(weights=ResNeXt50_32X4D_Weights)
+    modules = list(resnet.children())[:-2]  # Remove avgpool and fc
+    resnet = torch.nn.Sequential(*modules)
+
+    mobilenet.eval()
+    squeezenet.eval()
+    resnet.eval()
 
 
-# In[16]:
-anchor_subset = sample_cifar_evenly(cifar10_train, num_per_class=30)
+    # In[16]:
+    anchor_subset = sample_cifar_evenly(cifar10_train, num_per_class=30)
 
 
-# In[17]:
-# Generate relative representations for the train, validation, and test sets
-# MobileNetV2
-anchor_subset_matrix = torch.concat([img.unsqueeze(0) for img, _ in anchor_subset], dim=0).to(device)
+    # In[17]:
+    # Generate relative representations for the train, validation, and test sets
+    anchor_subset_matrix = torch.concat([img.unsqueeze(0) for img, _ in anchor_subset], dim=0).to(device)
 
-# Define the models and datasets
-models = [resnet, mobilenet, squeezenet, ]
-datasets = [("train", cifar10_train), ("val", cifar10_val), ("test", cifar10_test)]
-model_names = ["resnet", "mobilenet", "squeezenet", ]
+    # Define the models and datasets
+    models = [resnet, mobilenet, squeezenet, ]
+    datasets = [("train", cifar10_train), ("val", cifar10_val), ("test", cifar10_test)]
+    model_names = ["resnet", "mobilenet", "squeezenet", ]
 
-# Loop through each model and dataset
-for model, model_name in zip(models, model_names):
-    # Calculate the anchor matrix for each model
-    anchors_embedded = model.features(anchor_subset_matrix) if model_name != "resnet" else model(anchor_subset_matrix)
+    # Loop through each model and dataset
+    for model, model_name in zip(models, model_names):
+        # Calculate the anchor matrix for each model
+        anchors_embedded = model.features(anchor_subset_matrix) if model_name != "resnet" else model(anchor_subset_matrix)
 
-    for dataset_type, dataset in datasets:
-        # Construct the filename base for each combination (train/val/test)
-        filename_base = f"data/own_reps_{model_name}/{dataset_type}/batch.pth"
-        os.makedirs(os.path.dirname(filename_base), exist_ok=True)
-        # Call the function to get relative representations and save them in batches
-        get_relative_representations(dataset, anchors_embedded, model, filename_base, use_own_reps=True)
+        for dataset_type, dataset in datasets:
+            # Construct the filename base for each combination (train/val/test)
+            filename_base = f"data/own_reps_{model_name}/{dataset_type}/batch.pth"
+            os.makedirs(os.path.dirname(filename_base), exist_ok=True)
+            # Call the function to get relative representations and save them in batches
+            get_relative_representations(dataset, anchors_embedded, model, filename_base, use_own_reps=True)
