@@ -101,12 +101,12 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 
-def get_relative_representations(dataset, anchors_embedded, model, filename_base, batch_size=32):
+def get_relative_representations(dataset, anchors_embedded, model, filename_base, batch_size=32, use_own_reps=False):
     data, targets = [], []
     dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False)
 
     continue_counter = 0
-    for batch_idx, (imgs, targets_) in tqdm(enumerate(dataloader), total=len(dataloader), desc="Rel Reps"):
+    for batch_idx, (imgs, targets_) in tqdm(enumerate(dataloader), total=len(dataloader), desc="Reps"):
         filename_batch = filename_base.replace("batch", f"batch_{batch_idx + 1}")
 
         if os.path.exists(filename_batch):
@@ -121,7 +121,10 @@ def get_relative_representations(dataset, anchors_embedded, model, filename_base
         imgs_embedded = model.features(imgs) if "resnet" not in filename_base else model(imgs)
         # Process each image in the batch
         for img, target in zip(imgs_embedded, targets_):
-            repr = cossim(img.unsqueeze(0).reshape((1, -1)), anchors_embedded.reshape((len(anchors_embedded), -1)))
+            if not use_own_reps:
+                repr = cossim(img.unsqueeze(0).reshape((1, -1)), anchors_embedded.reshape((len(anchors_embedded), -1)))
+            else:
+                repr = img.flatten()
             data.append(repr)
             targets.append(target)
 
@@ -178,8 +181,7 @@ for model, model_name in zip(models, model_names):
 
     for dataset_type, dataset in datasets:
         # Construct the filename base for each combination (train/val/test)
-        filename_base = f"data/rel_reps_{model_name}/{dataset_type}/batch.pth"
+        filename_base = f"data/own_reps_{model_name}/{dataset_type}/batch.pth"
         os.makedirs(os.path.dirname(filename_base), exist_ok=True)
         # Call the function to get relative representations and save them in batches
-        get_relative_representations(dataset, anchors_embedded, model, filename_base)
-
+        get_relative_representations(dataset, anchors_embedded, model, filename_base, use_own_reps=True)
