@@ -98,11 +98,11 @@ class FFNN(CNN):
     def define_network(self):
         self.layers = torch.nn.Sequential(
             nn.Flatten(),
-            nn.LazyLinear(out_features=600),
+            nn.LazyLinear(out_features=2000),
             nn.ReLU(),
-            nn.Linear(in_features=600, out_features=120),
+            nn.Linear(in_features=2000, out_features=500),
             nn.ReLU(),
-            nn.Linear(in_features=120, out_features=self.num_classes)
+            nn.Linear(in_features=500, out_features=self.num_classes)
         )
         self.criterion = nn.CrossEntropyLoss()
         self.optim = torch.optim.Adam(self.layers.parameters(), lr=self.lr)
