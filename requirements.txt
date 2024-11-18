@@ -14,3 +14,5 @@ torch
 torchvision
 torchsummary
 seaborn
+hf_hub_download
+tokenizers
