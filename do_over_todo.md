@@ -7,30 +7,39 @@
 - [ ] Find a solution to students using ```git reset --hard```
 - [ ] Find a standard for writing tasks - should there always be explanatory text, then exercises then code, or some other way of doing things?
   - [ ] Standardize the way we write explanatory text and answers for exercises... do we use some specific font or text type? Can we do it without using bold, italic and whatnot?
+    - [ ] Consider whether exercise text should be **bold** at all...
   - [ ] Look into a way we can create "standard" HTML classes that then define how explanations and such are written... so we can change variables to have the explanation style change across all notebooks...
   - [ ] How do we discern exercise 1.1, sub exercise a, b and so on?
 - [ ] Find a standard for when we need them to implement or test *"x cells below"*
 - [ ] the "in general for exercises" should be written a central location, not every notebook
 - [ ] BIG ONE: Consider this whole concept of starting with the more advanced topics, and moving your way backwards...
 - [ ] BIG ONE AGAIN: Add "You should be able to do this" before each week's exercises. 
+- [ ] Consider if we need a special way of commenting on solution code, perhaps ## ANSWER
+- [ ] Consider if we need a special way to indicate where code should be written # TODO? or maybe Raise NotImplementedError?
 
 ## Week 1
 
-- [ ] Longer intro text
+- [x] Longer intro text
   - [ ] Ensure that you properly introduce that images are **matrices**
+- [ ] Check if Hiba uses N, M for height and width or H, W, and what she uses for channels
+- [ ] Downsize the stupid vase image to a smaller one!
 - [ ] Move difficult exercises to end or to own document
-- [ ] Ex 1.1: Add dots ... to exercises that require your text
+- [x] Ex 1.1: Add dots ... to exercises that require your text
 - [ ] Ex 1.1 Add more helping code or notes to binarize with thresholding and rgb_gray_scale
-- [ ] Look through 3.2
-- [ ] Redo explanation for color channels - Add explanatory images 
-- [ ] Ex 2.2: Clearly explain where we want them to "normalize each histogram by the total numnber of values of that color"
-- [ ] 3 - Better explanation, there should be a more clear "distinction" between the four important parts of a distance measure... Right now it looks... "*uoverskueligt"*
-- [ ] 3 - Break it up better, use vertical lines and whatnot to make it better
-- [ ] 3.1 Add intro reminding them that for disproving something, they only need to provide a case where it does not hold
-- [ ] 3.2 Redo explanations in solutions, they are rather verbose
+- [x] Look through 3.2
+- [ ] Redo explanation for color channels
+  - [x]  Better text
+  - [ ]  Add explanatory images 
+- [x] Ex 2.2: Clearly explain where we want them to "normalize each histogram by the total numnber of values of that color"
+- [ ] 3 - Consider if $I(x,y)$ as opposed to just $A_{nw}$ is good to use...
+- [x] 3 - Better explanation, there should be a more clear "distinction" between the four important parts of a distance measure... Right now it looks... "*uoverskueligt"*
+- [x] 3 - Break it up better, use vertical lines and whatnot to make it better
+- [x] 3.1 Add intro reminding them that for disproving something, they only need to provide a case where it does not hold
+- [x] 3.2 Redo explanations in solutions, they are rather verbose
 - [ ] 3.2 - Perhaps redo how the "final note" is introduced
 - [ ] Perhaps add exercise about adding single colored "dots", "lines" or "boxes" to images by changing values in an array
 - [ ] Standardize folder structures - images should be in an 'images' folder, data in 'data', etc.
+- [ ] 6 - Double-check that minkowski is valid only for $p \geq 1$ or is it $p > 1$
 
 ## Week 2
 
@@ -203,3 +212,14 @@
 - [ ] Exercise 3.
   - [ ] Have a clear seperation from latent semantic analysis and in general word analysis and the next topic which is sentiment analysis
   - [ ] Add formulae and visualizations for sentiment analysis
+
+## Week 8
+- [ ] Perhaps have this week be dedicated to word embeddings instead of fasttext, have next week introduce fasttext
+- [ ] Visualizations to the introduction
+
+## Week 9
+- [ ]
+- [ ]
+
+## Week 10
+- [ ] Converse with Fabian on what can be done...
