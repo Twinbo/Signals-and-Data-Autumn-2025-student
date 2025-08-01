@@ -40,6 +40,7 @@
 - [ ] Perhaps add exercise about adding single colored "dots", "lines" or "boxes" to images by changing values in an array
 - [ ] Standardize folder structures - images should be in an 'images' folder, data in 'data', etc.
 - [ ] 6 - Double-check that minkowski is valid only for $p \geq 1$ or is it $p > 1$
+- [ ] FINAL: Update non-solution document
 
 ## Week 2
 
