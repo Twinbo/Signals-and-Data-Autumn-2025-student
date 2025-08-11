@@ -16,6 +16,7 @@
 - [ ] BIG ONE AGAIN: Add "You should be able to do this" before each week's exercises. 
 - [ ] Consider if we need a special way of commenting on solution code, perhaps ## ANSWER
 - [ ] Consider if we need a special way to indicate where code should be written # TODO? or maybe Raise NotImplementedError?
+- [ ] Look into prettifying ways of printing expected and test output side by side
 
 ## Week 1
 
@@ -44,15 +45,27 @@
 
 ## Week 2
 
-- [ ] Redo introduction explanation, more chill distinction between cross-correlation and convolution
-- [ ] Add another gif explaining cross-correlation or convolution, perhaps one highlighting differences between the two...
-- [ ] Remove the "In general for exercises"
+- [x] Redo introduction explanation, more chill distinction between cross-correlation and convolution
+- [x] Add another gif explaining cross-correlation or convolution, perhaps one highlighting differences between the two...
+- [x] Remove the "In general for exercises"
+- [ ] Add "You should be able to do this" at the beginning
+- [ ] Ex 1.1: Consider if we need to have a "show image" function or if it is unecessary boilerplate
 - [ ] Ex 1.1.1: Add small explanation exercise for how the different paddings work...
 - [ ] Ex 1.1.2 Standardize convolution2d with dots and whatnot
 - [ ] Ex 1.1.2 Explanation cell below, should be given above, also make more newlines and whatnot
 - [ ] Ex 1.1.2 Scipy comparison, fix output being given in a whack format
+- [ ] Exercise 2: add docstrings to functions
 - [ ] Exercise 2: "Why does this kernel blur the image?" question not part of an exercise technically...
 - [ ] PERHAPS: Add a "Why do we even learn these 'complete' convolutions when neural network convolutions (learned kernels) are all the rage anyways?"
+- [ ] Consider where the "implement your own convolution function" exercise should be...
+- [ ] Add note/exercise about how we can calculate the input/output size of images after convolution
+- [ ] Perhaps a question about the algorithmic complexity of convolution?
+- [ ] Perhaps introduce np.pad function as padding rows and columns independently
+- [ ] Ex 2: Consider if for convolution you need a "combined differnece between scipy and your implementation"
+- [ ] Ex 3: Ensure we use either W, K or F consistently for all kernels, and don't switch willy-nilly between them
+- [ ] Ask if it is important that we say that the edge filter is an approximation of the laplacian
+- [ ] Consider if we need a question asking what happens if we do not normalize pixel values to one, or use a kernel with values that do not sum to one?
+- [ ] Complete cross-entropy part of the exercises
 
 ## Week 3
 
