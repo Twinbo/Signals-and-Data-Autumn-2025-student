@@ -1,65 +1,81 @@
-# Signals-And-Data-Autumn-2024
+# Signals-And-Data-Autumn-2025
 This repository contains the exercises for each week of the 02462 Signals and Data course at DTU for autumn 2024. 
 
-## Set-up virtual environment
-To use this repository most effectively, we recommend you set up a virtual environment. We provide two different general methods for configuring this virtual environment.
+Before beginning to use this environment, we recommend setting up a virtual environment using the below guide:
 
-### Using Poetry and Conda (Reccommended)
+## Setup virtual environment using UV (recommended)
 
-*Poetry is (in this case) a much superior tool, as it effectively straightjackets you to use the same package versions as the authors of this material, we therefore recommend this as the package management tool of choice.*
+[UV](https://docs.astral.sh/uv/) is the cooler, newer sibling to Pip. Getting started with it is pretty straightforward, whether you already use conda or not.
 
-*IMPORTANT: Do not do this in your base environment, it will fuck up the whole thing and be terrible. For God's and all our sakes, MAKE A NEW CONDA ENVIRONMENT!!!!*
+1. **Install UV**:
+   1. **If you have conda**, open a conda terminal and write `pipx install uv`. If this does not work, enter `pip install uv`. If this does not work, continue to step 2 to 3.
+   2. **If don't have conda, and are on Windows**, open a powershell terminal and enter `powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"`
+   3. **If you don't have conda and are on Linux/macOS**, open a terminal and enter `curl -LsSf https://astral.sh/uv/install.sh | sh`, if you do not have curl, enter `wget -qO- https://astral.sh/uv/install.sh | sh`
+2. **Clone the git repository**:
+   1.  **If you have git installed and are on windows**, enter *git bash* prompt and enter `git clone https://github.com/02462-Signals-and-Data/Signals-and-Data-Autumn-2024-student.git`
+   2.  **If you have git installed and are on Linux/macOS**, enter a terminal and enter `git clone https://github.com/02462-Signals-and-Data/Signals-and-Data-Autumn-2024-student.git`
+   3.  **If you do not have git installed**, follow [this guide](https://git-scm.com/downloads) to install git
+   4.  **If you *for some reason*** don't want to use git, click "Code" and "Download ZIP" and unzip in the location you want to run it from
+3.  **Sync UV environment**:
+    1.  Enter the terminal you used to install UV (likely powershell if windows, regular terminal otherwise)
+    2.  Navigate to the folder you copied the git repository to
+    3.  Enter `uv sync` - this should install all necessary packages from the *uv.lock* file to a new folder called .venv
+4.  **Open Jupyter notebooks:**
+    1.  To use jupyter notebook directly:
+        1.  Open a terminal with the copied git folder as the directory 
+        2.  Write `uv run --with jupyter jupyter lab`
+        3.  This should open up a jupyter notebook instance with all the packages installed by UV
+        4.  Repeat this whenever you want to reopen jupyter notebook
+    2.  To use notebooks in vscode:
+        1.   Enter one of the week's exercises
+        2.   Press ctrl+shift+p to open up the command window
+        3.   Write "interpreter" and you should be able to see an option called "Python: Select Interpreter". Press enter.
+        4.   Navigate to "Enter Interpreter Path" and press enter. 
+        5.   It will prompt you for a path to the .venv folder. You can copy this by right-clicking the .venv folder and pressing "Copy Path".
+        6.   Enter this copied path into the vs code prompt.
+        7.   Following this, whenever you run a cell in a notebook for the first time, you should see your .venv folder as an option, select this.
+        8.   If it does not prompt you automatically, enter the command window with ctrl+shift+p and write "Kernel". Select the option called "Notebook: Select Notebook Kernel".
+        9.   Click "select other kernels"
+        10.  Navigate to the interpreter that points to the .venv folder path
+        11.  If done correctly, VSCode will now automatically suggest the same kernel for future use.
 
-<!-- *Based on how clean your existing conda installation is, **it should be impossible to fuck up*** -->
+- If you feel any packages are missing, you always install them with `uv add package-name`, this will also add them to the *pyproject.toml* file present in the project. 
+- Packages can be removed with `uv remove package-name` followed by `uv sync`. Running `uv lock`, reproduces the *uv.lock* file, and allows for you to export a 'snapshot' environment to potential collaborators.
+- The reason we recommend uv as opposed to pip, is to avoid the typical problems of package mismanagement that comes with machine learning when dictated by pip. Usually this comes in the form of pip correctly installing a version of a package with depdencies, and then overwriting those dependecies when installing the next package. UV fixes this by having the *uv.lock* file define a specific 'tree' of dependency resolution, and not allowing subdependency mismatches between packages specified in the pyproject.toml file
 
-1. Create a new conda environment, open your terminal (or specific conda terminal): \
-```conda create --name your_env_name```
+## Setup virtual environment using pip (not recommended)
 
-2. Activate the new conda environment
-```conda activate your_env_name```
- 
-3. Ensure pip is installed in this new conda environment
-```conda install pip```
+Here we require pip, so we assume you have conda or simliar program with access to pip installed
 
-4. Install pipx using pip (needed to install poetry)
-```pip install pipx```
+1. Follow step 2 above to clone the git repository
 
-5. Install poetry using pipx
-```pipx install poetry```
+2. **Make a new conda environment** (not necessary, but HIGHLY recommended)
+   1. Enter a conda prompt and write `conda create --name signals-and-data python=3.11 -y`
+   2. Activate the new conda environment with `conda activate signals-and-data`
+   3. Install the packages in the requirements.txt file with `pip install -r requirements.txt` (make sure you are in the same folder as the requirements.txt file!)
+3. **Open Jupyter notebooks:**
+   1. To use jupyter notebook directly:
+      1. Open a conda terminal
+      2. Ensure you have the correct virtual environment chosen by running `conda activate signals-and-data`
+      3. Enter `jupyter notebook` to open a jupyter notebook
+   2. To use notebooks in vscode:
+      1. Open any of of the week's exercises
+      2. Enter ctrl+shift+p to enter the command window
+      3. Write 'Python', you should see an option called "Python: Select enterpreter", choose this
+      4. Under conda environments, you should be able to see one called 'signals-and-data' choose this
+      5. When running a jupyter notebook cell, you should be prompted to select a kernel
+      6. Click "select another kernel"
+      7. Click "python environments"
+      8. Choose the aforementioned newly created Python environment "signals-and-data"
+  
+- We assume you can install and remove packages using pip yourselves
+- A warning, pip doesn't have a very good dependency solver, and you may run into issues where it wants to install one package that depends on a specific version of subdependency A, while later installing another package which depends on another version of subdependency A, this will cause pip to overwrite the version of subdependency A based on whatever package that requires it was installed last. 
 
-6. Add the path to poetry to your given terminal
-```pipx ensurepath```
+## *Not* setting up a new virtual environment and running it in a base Python environment
 
-7. Use poetry to install the packages of this course
-```poetry install --no-root```
+**Don't** do this. It's not just for funsies we setup virtual environments. Stuff *will* break so long as you have any other course than this.
 
-8. Profit
-
-
-### Using Pip and Pip requirements (Basic)
-
-*Using this method is **not** reccomended as it opens you up to possible version mismatches and errors down the line. We will not be held responsible for package mismatches that appear as a result of this*
-
-0. (Optional): Clone this repository, open a terminal a write: \
-  ```git clone https://github.com/02462-Signals-and-Data/Signals-and-Data-Autumn-2024-student.git```
-
-1. Create a new conda environment, open your terminal (or specific conda terminal): \
- ```conda create --name your_env_name```
-
-2. Activate your new conda environment by running
-```conda activate your_env_name```
-
-3. Ensure pip is installed in this new conda environment
-```conda install pip```
-
-4. Navigate to the folder with the requirements file and install them all using pip: \
-```pip install -r requirements.txt``` 
-
-1. Before running your code (in a notebook), be sure to:  
-   1. Select your new environment as your Python interpreter (if using VSCode)
-   2. Activate your environment by inputting ```conda acitvate your_env_name``` and open a jupyter notebook with ```jupyter notebook```
-
-*Do remember to ask for help from your TAs, a chatbot or Google if you run into any problems performing the above steps.*
+Just setup the virtual environment
 
 ## Pulling updates
 
