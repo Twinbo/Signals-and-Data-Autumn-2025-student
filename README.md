@@ -18,7 +18,7 @@ Before beginning to use this environment, we recommend setting up a virtual envi
    4.  **If you *for some reason*** don't want to use git, click "Code" and "Download ZIP" and unzip in the location you want to run it from
 3.  **Sync UV environment**:
     1.  Enter the terminal you used to install UV (likely powershell if windows, regular terminal otherwise)
-    2.  Navigate to the folder you copied the git repository to
+    2.  Navigate to the folder you copied the git repository to with `cd` followed by the path to the folder
     3.  Enter `uv sync` - this should install all necessary packages from the *uv.lock* file to a new folder called .venv
 4.  **Open Jupyter notebooks:**
     1.  To use jupyter notebook directly:
