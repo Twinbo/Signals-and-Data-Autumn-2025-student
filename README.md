@@ -11,6 +11,7 @@ Before beginning to use this environment, we recommend setting up a virtual envi
    1. **If you have conda**, open a conda terminal and write `pipx install uv`. If this does not work, enter `pip install uv`. If this does not work, continue to step 2 to 3.
    2. **If don't have conda, and are on Windows**, open a powershell terminal and enter `powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"`
    3. **If you don't have conda and are on Linux/macOS**, open a terminal and enter `curl -LsSf https://astral.sh/uv/install.sh | sh`, if you do not have curl, enter `wget -qO- https://astral.sh/uv/install.sh | sh`
+      1. **If you get an error with the MacOS operation above**, install with Homebrew instead. Firstly, install Homebrew using `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"` then run `brew install uv`
 2. **Clone the git repository**:
    1.  **If you have git installed and are on windows**, enter *git bash* prompt and enter `git clone https://github.com/02462-Signals-and-Data/Signals-and-Data-Autumn-2024-student.git`
    2.  **If you have git installed and are on Linux/macOS**, enter a terminal and enter `git clone https://github.com/02462-Signals-and-Data/Signals-and-Data-Autumn-2024-student.git`
@@ -93,7 +94,7 @@ This **should** automatically do the following:
 
 You are of course free to use your own methods of pulling and such, but using this method automatically stashes and reapplies your local changes. Meaning:
 
-1. Git doesn't bitch about you not having commited or stashed your changes
+1. Git doesn't complain about you not having commited or stashed your changes
 2. Git does not overwrite your precious changes to existing weeks (in case we change something in the previous weeks to fix and error, for example)
 3. **HOWEVER** in the case of 2. it *might* lead to merge conflicts and the like, as your local changes are applied willy-nilly on the remote changes.
 
