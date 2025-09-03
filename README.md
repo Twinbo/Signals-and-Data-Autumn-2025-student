@@ -1,5 +1,5 @@
 # Signals-And-Data-Autumn-2025
-This repository contains the exercises for each week of the 02462 Signals and Data course at DTU for autumn 2024. 
+This repository contains the exercises for each week of the 02462 Signals and Data course at DTU for autumn 2025. 
 
 Before beginning to use this environment, we recommend setting up a virtual environment using the below guide:
 
@@ -13,8 +13,8 @@ Before beginning to use this environment, we recommend setting up a virtual envi
    3. **If you don't have conda and are on Linux/macOS**, open a terminal and enter `curl -LsSf https://astral.sh/uv/install.sh | sh`, if you do not have curl, enter `wget -qO- https://astral.sh/uv/install.sh | sh`
       1. **If you get an error with the MacOS operation above**, install with Homebrew instead. Firstly, install Homebrew using `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"` then run `brew install uv`
 2. **Clone the git repository**:
-   1.  **If you have git installed and are on windows**, enter *git bash* prompt and enter `git clone https://github.com/02462-Signals-and-Data/Signals-and-Data-Autumn-2024-student.git`
-   2.  **If you have git installed and are on Linux/macOS**, enter a terminal and enter `git clone https://github.com/02462-Signals-and-Data/Signals-and-Data-Autumn-2024-student.git`
+   1.  **If you have git installed and are on windows**, enter *git bash* prompt and enter `git clone https://github.com/02462-Signals-and-Data/Signals-and-Data-Autumn-2025-student.git`
+   2.  **If you have git installed and are on Linux/macOS**, enter a terminal and enter `git clone https://github.com/02462-Signals-and-Data/Signals-and-Data-Autumn-2025-student.git`
    3.  **If you do not have git installed**, follow [this guide](https://git-scm.com/downloads) to install git
    4.  **If you *for some reason*** don't want to use git, click "Code" and "Download ZIP" and unzip in the location you want to run it from
 3.  **Sync UV environment**:
